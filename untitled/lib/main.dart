@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:untitled/home/homePage.dart';
+
 
 
 void main() => runApp(MyApp());
@@ -60,7 +63,8 @@ class SignUp extends StatelessWidget{
           SizedBox(height: 20),
           new Container(
             child: Image(
-              image: AssetImage('assets/login/login-with-facebook-button-png-5.jpg'),
+              image: AssetImage(
+                  'assets/login/login-with-facebook-button-png-5.jpg'),
             ),
           ),
           SizedBox(height: 20),
@@ -71,8 +75,13 @@ class SignUp extends StatelessWidget{
           ),
           SizedBox(height: 20),
           new Container(
-            child: Image(
-              image: AssetImage('assets/login/supervised_user_circle-24px.jpg'),
+            child: GestureDetector(
+              onTap: () {},
+              child: Image(
+                image: AssetImage(
+                  'assets/login/supervised_user_circle-24px.jpg',),
+
+              ),
             ),
           ),
           SizedBox(height: 10),
@@ -83,16 +92,114 @@ class SignUp extends StatelessWidget{
               new Text('Or'),
             ],
           ),
-          SizedBox(height: 25),
+
           new Container(
-            child: Image(
-              image: AssetImage('assets/login/email.jpg'),
+            child: RaisedButton.icon(
+              icon: Icon(Icons.mail),
+              label: Text('Mail'),
+              color: Colors.amber,
+              splashColor: Colors.amber,
+              onPressed: () {
+                Navigator.of(context).push(
+                    new MaterialPageRoute(builder: (context) {
+                      String _email, _password;
+                      final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+                      void signIn() async {
+
+                        final FormState formState=_formKey.currentState;
+                        if(formState.validate()) {
+                          formState.save();
+                          try {
+                            FirebaseUser user = FirebaseAuth.instance
+                                .createUserWithEmailAndPassword(email: _email,
+                                password: _password) as FirebaseUser;
+
+
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => homePage()));
+                          }
+                          catch (e) {
+                            print(e.message);
+                          }
+                        }
+                      }
+
+
+                      return Scaffold(/* Redirects user to login from*/
+
+                        appBar: AppBar(
+                          title: Text('Login with email'),
+                        ),
+                        body: (
+                            Container(
+                              padding: EdgeInsets.fromLTRB(40, 50, 40, 0),
+                              child: (
+                                  Form(
+                                    key: _formKey,
+                                    child: Column(
+                                      children: <Widget>[
+                                        TextFormField(
+                                          validator: (input) {
+                                            if (input.isEmpty) {
+                                              return "Email field is empty";
+                                            }
+                                            else {
+                                              return null;
+                                            }
+                                          },
+                                          onSaved: (input) => _email = input,
+                                          decoration: InputDecoration(
+                                              labelText: 'Email ID'
+
+                                          ),
+                                        ),
+
+                                        TextFormField(
+                                          validator: (input) {
+                                            if (input.isEmpty)
+                                            {
+                                              return "Password field is empty";
+                                            }
+                                            if(input.length<6)
+                                            {
+                                                return "Password must be atleast 6 characters long";
+                                            }
+                                            else
+                                              {
+                                                return null;
+                                              }
+                                          },
+                                          onSaved: (input) => _password = input,
+                                          decoration: InputDecoration(
+                                              labelText: 'Password'
+
+                                          ),
+                                          obscureText: true,
+                                        ),
+                                        SizedBox(height: 30),
+
+                                        RaisedButton(
+                                          onPressed: signIn,
+                                          textColor: Colors.white,
+                                          child: Text('Siginup'),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                              ),
+                            )
+                        ),
+                      );
+                    }
+                    )
+                );
+              },
             ),
           )
         ],
-        ),
-      );
+      ),
+    );
 
-     }
-
+  }
 }
