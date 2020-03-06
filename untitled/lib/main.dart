@@ -125,17 +125,18 @@ class SignUp extends StatelessWidget {
                           if (formState.validate()) {
                             formState.save();
                             try {
-                              _ref.push().child("UserData").set({
+                              _ref.push().child("UserData").set({                      //adding form data to database
                                 'Name': _firstName,
                                 "EmailID": _email,
                                 "PhoneNumber": _phoneNumber
                               });
 
-                              FirebaseUser user = FirebaseAuth.instance
+                              FirebaseUser user = FirebaseAuth.instance               //creating new user
                                   .createUserWithEmailAndPassword(email: _email,
                                   password: _password) as FirebaseUser;
+                              FirebaseAuth.instance.signOut();
 
-                              //Database code
+                              //Code to redirect to login page
 
                             }
                             catch (e) {
