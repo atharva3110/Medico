@@ -1,21 +1,21 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled/home/appointment.dart';
 import 'package:untitled/home/chatsForums.dart';
-import 'package:untitled/home/findDocs.dart';
 import 'package:untitled/home/profile.dart';
 import 'package:untitled/home/trackMedication.dart';
 
-class homePage extends StatefulWidget {
+class findDocs extends StatefulWidget {
   @override
-  _homePageState createState() => _homePageState();
+  _findDocsState createState() => _findDocsState();
 }
 
-class _homePageState extends State<homePage> {
+class _findDocsState extends State<findDocs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Homepage'),
+        title: Text('Find Doctors'),
       ),
       drawer: new Drawer(
         child: new ListView(
@@ -24,12 +24,12 @@ class _homePageState extends State<homePage> {
             new UserAccountsDrawerHeader(
               accountName: new Text("Michael Scott",
                 style: TextStyle(
-                  fontSize: 20.0,fontWeight: FontWeight.bold,color: Color.fromRGBO(0, 0, 0, 1)
+                    fontSize: 20.0,fontWeight: FontWeight.bold,color: Color.fromRGBO(0, 0, 0, 1)
                 ),
               ),
               accountEmail: new Text("Complete your profile",
                 style: TextStyle(
-                  fontSize: 13.0,fontWeight: FontWeight.normal,color: Color.fromRGBO(125,118,118, 1)
+                    fontSize: 13.0,fontWeight: FontWeight.normal,color: Color.fromRGBO(125,118,118, 1)
                 ),
               ),
               currentAccountPicture: new GestureDetector(
@@ -39,8 +39,8 @@ class _homePageState extends State<homePage> {
                 ),
               ),
               decoration: new BoxDecoration(
-                image: new DecorationImage(
-                  image: AssetImage('assets/login/drawer_header.jpg'),fit: BoxFit.fitWidth)
+                  image: new DecorationImage(
+                      image: AssetImage('assets/login/drawer_header.jpg'),fit: BoxFit.fitWidth)
               ),
 
             ),
@@ -58,7 +58,7 @@ class _homePageState extends State<homePage> {
                 Navigator.of(context).push(new MaterialPageRoute(
                     builder: (BuildContext context) => new appointment()));
               },
-              ),
+            ),
             ListTile(
               leading: Icon(Icons.people,color: Color.fromRGBO(61, 13, 68, 1),),
               title: Text("Find Doctors",
@@ -120,7 +120,7 @@ class _homePageState extends State<homePage> {
             )
           ],
         ),
-        ),
+      ),
 
     );
   }
