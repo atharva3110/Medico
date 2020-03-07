@@ -1,39 +1,22 @@
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:untitled/home/homePage.dart';
-
-import 'home/homePage.dart';
-
+import 'package:firebase_database/firebase_database.dart';
 
 
 void main() => runApp(MyApp());
-
-Map<int, Color> color =
-{
-  50:Color.fromRGBO(2,0,97, .1),
-  100:Color.fromRGBO(2,0,97, .2),
-  200:Color.fromRGBO(2,0,97, .3),
-  300:Color.fromRGBO(2,0,97, .4),
-  400:Color.fromRGBO(2,0,97, .5),
-  500:Color.fromRGBO(2,0,97, .6),
-  600:Color.fromRGBO(2,0,97, .7),
-  700:Color.fromRGBO(2,0,97, .8),
-  800:Color.fromRGBO(2,0,97, .9),
-  900:Color.fromRGBO(2,0,97, 1),
-};
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
-    MaterialColor colorCustom = MaterialColor(0xFF020061, color);
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
 
-        primarySwatch: colorCustom,
-        bottomAppBarColor: colorCustom
+        primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -68,154 +51,289 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class SignUp extends StatelessWidget{
+class SignUp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: new Column(
-        children: <Widget>[
-          new Container(
-            child: Image(
-              image: AssetImage('assets/login/Signup_bg.jpg'),
-            ),
-          ),
-          SizedBox(height: 20),
-          new Container(
-            child: Image(
-              image: AssetImage(
-                  'assets/login/login-with-facebook-button-png-5.jpg'),
-            ),
-          ),
-          SizedBox(height: 20),
-          new Container(
-            child: Image(
-              image: AssetImage('assets/login/google.jpg'),
-            ),
-          ),
-          SizedBox(height: 20),
-          new Container(
-            child: GestureDetector(
-              onTap: () {},
-              child: Image(
-                image: AssetImage(
-                  'assets/login/supervised_user_circle-24px.jpg',),
+    return Scrollbar(
+      child: Scaffold(
+        body: new Column(
+          children: <Widget>[
 
+            new Container(
+              child: Image(
+                image: AssetImage('assets/login/Signup_bg.jpg'),
               ),
             ),
-          ),
-          SizedBox(height: 10),
-          new Row(
-            children: <Widget>[
+            SizedBox(height: 20),
+            new Container(
+              child: GestureDetector(
+                onTap: () {},
 
-              SizedBox(width: 200),
-              new Text('Or'),
-            ],
-          ),
+                child: Image(
+                  image: AssetImage(
+                      'assets/login/login-with-facebook-button-png-5.jpg'),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            new Container(
+              child: Image(
+                image: AssetImage('assets/login/google.jpg'),
+              ),
+            ),
+            SizedBox(height: 20),
+            new Container(
+              child: GestureDetector(
+                onTap: () {},
+                child: Image(
+                  image: AssetImage(
+                    'assets/login/supervised_user_circle-24px.jpg',),
 
-          new Container(
-            child: RaisedButton.icon(
-              icon: Icon(Icons.mail),
-              label: Text('Mail'),
-              color: Colors.amber,
-              splashColor: Colors.amber,
-              onPressed: () {
-                Navigator.of(context).push(
-                    new MaterialPageRoute(builder: (context) {
-                      String _email, _password;
-                      final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            new Row(
+              children: <Widget>[
+                SizedBox(width: 170),
+                new Text('Or'),
+              ],
+            ),
 
-                      void signIn() async {
+            new Container(
+              child: RaisedButton.icon(
+                icon: Icon(Icons.mail),
+                label: Text('Mail'),
+                color: Colors.amber,
+                splashColor: Colors.amber,
+                onPressed: () {
+                  Navigator.of(context).push(
+                      new MaterialPageRoute(builder: (context) {
+                        String _email, _firstName, _phoneNumber, _age,
+                            _password, _confirmPass;
+                        FirebaseDatabase db= new FirebaseDatabase();
+                        DatabaseReference _ref=db.  reference().child("Users");
 
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => homePage()));
 
-                        final FormState formState=_formKey.currentState;
-                        if(formState.validate()) {
-                          formState.save();
-                          try {
-                            FirebaseUser user = FirebaseAuth.instance
-                                .createUserWithEmailAndPassword(email: _email,
-                                password: _password) as FirebaseUser;
-                          }
-                          catch (e) {
-                            print(e.message);
+                        final GlobalKey<FormState> _formKey = GlobalKey<
+                            FormState>();
+                        FormState fs = _formKey.currentState;
+                        void signIn() async {
+                          //signin function
+
+                          final FormState formState = _formKey.currentState;
+                          if (formState.validate()) {
+                            formState.save();
+                            try {
+                              _ref.push().child("UserData").set({                      //adding form data to database
+                                'Name': _firstName,
+                                "EmailID": _email,
+                                "PhoneNumber": _phoneNumber
+                              });
+
+                              FirebaseUser user = FirebaseAuth.instance               //creating new user
+                                  .createUserWithEmailAndPassword(email: _email,
+                                  password: _password) as FirebaseUser;
+                              FirebaseAuth.instance.signOut();
+
+                              //Code to redirect to login page
+
+                            }
+                            catch (e) {
+                              print(e.message);
+                            }
                           }
                         }
-                      }
-                      return Scaffold(/* Redirects user to login from*/
 
-                        appBar: AppBar(
-                          title: Text('Login with email'),
-                        ),
-                        body: (
-                            Container(
-                              padding: EdgeInsets.fromLTRB(40, 50, 40, 0),
+
+                        return Scaffold(/* Redirects user to login from*/
+
+                          appBar: AppBar(
+                            title: Text('Login with email'),
+                            backgroundColor: Colors.deepPurple[400],
+                          ),
+                          body: SingleChildScrollView(
+                            padding: EdgeInsets.fromLTRB(30, 40, 30, 0),
+                            child: Card(
+                              elevation: 7,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)
+                              ),
                               child: (
-                                  Form(
-                                    key: _formKey,
-                                    child: Column(
-                                      children: <Widget>[
-                                        TextFormField(
-                                          validator: (input) {
-                                            if (input.isEmpty) {
-                                              return "Email field is empty";
-                                            }
-                                            else {
-                                              return null;
-                                            }
-                                          },
-                                          onSaved: (input) => _email = input,
-                                          decoration: InputDecoration(
-                                              labelText: 'Email ID'
+                                  Container(
+                                    padding: EdgeInsets.fromLTRB(40, 25, 40, 0),
+                                    child: (
+                                        Form(
+                                          key: _formKey,
+                                          child: Column(
+                                            children: <Widget>[
 
+                                              TextFormField( //email
+
+
+                                                validator: (input) {
+                                                  if (input.isEmpty) {
+                                                    return "Email field is empty";
+                                                  }
+                                                  else {
+                                                    return null;
+                                                  }
+                                                },
+                                                onSaved: (input) =>
+                                                _email = input,
+                                                decoration: InputDecoration(
+                                                    labelText: 'Email ID',
+
+                                                    icon: Icon(Icons.mail,
+                                                      color: Colors.deepPurple
+                                                      ,)
+
+                                                ),
+
+                                              ),
+                                              TextFormField( //Name
+
+
+                                                validator: (input) {
+                                                  if (input.isEmpty) {
+                                                    return "Name cannot be empty";
+                                                  }
+                                                  else {
+                                                    return null;
+                                                  }
+                                                },
+                                                onSaved: (input) =>
+                                                _firstName = input,
+                                                decoration: InputDecoration(
+                                                    labelText: 'Name',
+
+                                                    icon: Icon(
+                                                      Icons.account_circle,
+                                                      color: Colors.deepPurple
+                                                      ,)
+
+                                                ),
+
+                                              ),
+                                              TextFormField( //Phone Number
+
+
+                                                validator: (input) {
+                                                  if (input.isEmpty) {
+                                                    return "Phone Number cannot be empty";
+                                                  }
+                                                  else {
+                                                    return null;
+                                                  }
+                                                },
+                                                onSaved: (input) =>
+                                                _phoneNumber = input,
+                                                decoration: InputDecoration(
+                                                    labelText: 'Phn Number',
+
+                                                    icon: Icon(Icons.phone,
+                                                      color: Colors.deepPurple
+                                                      ,)
+
+                                                ),
+                                                keyboardType: TextInputType
+                                                    .number,
+
+                                              ),
+
+                                              TextFormField(
+
+                                                validator: (input) {
+                                                  if (input.isEmpty) {
+                                                    return "Password field is empty";
+                                                  }
+                                                  if (input.length < 6) {
+                                                    return "Password must be atleast 6 characters long";
+                                                  }
+                                                  else {
+                                                    return null;
+                                                  }
+                                                },
+                                                onSaved: (input) {
+                                                  _password = input;
+                                                },
+                                                decoration: InputDecoration(
+                                                    labelText: 'Password',
+                                                    icon: Icon(
+                                                      Icons.lock_outline,
+                                                      color: Colors.deepPurple,)
+
+                                                ),
+                                                obscureText: true,
+
+                                              ),
+
+
+                                              TextFormField(
+
+                                                validator: (input) {
+                                                  if (identical(
+                                                      _password.toString(),
+                                                      _confirmPass
+                                                          .toString()) ==
+                                                      false) {
+                                                    return "Passwords does not match";
+                                                  }
+                                                  else {
+                                                    return null;
+                                                  }
+                                                },
+                                                onSaved: (input) =>
+                                                _confirmPass = input,
+                                                decoration: InputDecoration(
+                                                    labelText: 'Confirm Password',
+                                                    icon: Icon(
+                                                      Icons.lock_outline,
+                                                      color: Colors.deepPurple,)
+
+                                                ),
+                                                obscureText: true,
+                                              ),
+                                              SizedBox(height: 20,),
+
+                                              RaisedButton(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius
+                                                        .circular(18)
+                                                ),
+                                                onPressed: signIn,
+                                                padding: EdgeInsets.fromLTRB(
+                                                    50, 10, 50, 10),
+                                                textColor: Colors.white,
+                                                color: Colors.deepPurple,
+                                                child: Text('Siginup',
+                                                  style: TextStyle(
+                                                    letterSpacing: 2.0,
+                                                  ),),
+                                              ),
+                                              SizedBox(height: 10,)
+
+                                            ],
                                           ),
-                                        ),
-
-                                        TextFormField(
-                                          validator: (input) {
-                                            if (input.isEmpty)
-                                            {
-                                              return "Password field is empty";
-                                            }
-                                            if(input.length<6)
-                                            {
-                                                return "Password must be atleast 6 characters long";
-                                            }
-                                            else
-                                              {
-                                                return null;
-                                              }
-                                          },
-                                          onSaved: (input) => _password = input,
-                                          decoration: InputDecoration(
-                                              labelText: 'Password'
-
-                                          ),
-                                          obscureText: true,
-                                        ),
-                                        SizedBox(height: 30),
-
-                                        RaisedButton(
-                                          onPressed: signIn,
-                                          textColor: Colors.white,
-                                          child: Text('Siginup'),
                                         )
-                                      ],
                                     ),
                                   )
                               ),
-                            )
-                        ),
-                      );
-                    }
-                    )
-                );
-              },
-            ),
-          )
-        ],
+
+                            ),
+
+                          ),
+                        );
+                      }
+                      )
+                  );
+                },
+              ),
+            )
+          ],
+        ),
       ),
     );
-
   }
+
 }
