@@ -4,25 +4,36 @@ import 'package:untitled/home/chatsForums.dart';
 import 'package:untitled/home/findDocs.dart';
 import 'package:untitled/home/profile.dart';
 import 'package:untitled/home/trackMedication.dart';
-
+import 'package:untitled/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 class homePage extends StatefulWidget {
+  final FirebaseUser user;
+
+  const homePage({Key key, this.user}) : super(key: key);
+
   @override
   _homePageState createState() => _homePageState();
 }
 
 class _homePageState extends State<homePage> {
+   Firestore _firestoredb=Firestore.instance;
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Homepage'),
+        title: Text("Home Page"),
       ),
       drawer: new Drawer(
         child: new ListView(
           padding: EdgeInsets.zero,
           children: [
             new UserAccountsDrawerHeader(
-              accountName: new Text("Michael Scott",
+
+              accountName: new Text(widget.user.email,
                 style: TextStyle(
                   fontSize: 20.0,fontWeight: FontWeight.bold,color: Color.fromRGBO(0, 0, 0, 1)
                 ),
@@ -116,6 +127,22 @@ class _homePageState extends State<homePage> {
                 Navigator.of(context).pop;
                 Navigator.of(context).push(new MaterialPageRoute(
                     builder: (BuildContext context) => new trackMedication()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.reply,color: Color.fromRGBO(61, 13, 68, 1),),
+              title: Text("Logout",
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: Color.fromRGBO(181, 166, 166, 1),
+                  //fontFamily: 'Segoe UI',
+                ),
+              ),
+              onTap: (){
+                FirebaseAuth.instance.signOut();
+                Navigator.of(context).pop;
+                Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (BuildContext context) => new MyHomePage()));
               },
             )
           ],
