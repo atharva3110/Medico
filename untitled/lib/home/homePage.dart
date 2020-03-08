@@ -18,14 +18,103 @@ class homePage extends StatefulWidget {
 
 class _homePageState extends State<homePage> {
    Firestore _firestoredb=Firestore.instance;
+   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 
 
   @override
   Widget build(BuildContext context) {
+    var divheight = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Home Page"),
+      key: _scaffoldKey,
+      body: Column(
+        children: <Widget>[
+          new Container(
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 28),
+            decoration: new BoxDecoration(
+                image: new DecorationImage(
+                    image: new AssetImage('assets/login/header.jpg'),
+                    fit: BoxFit.cover)
+            ),
+            height: divheight/2*0.4,
+            child: new Stack(
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          InkWell(
+                            child: Icon(Icons.menu, color: Colors.white,),
+                            onTap: () => _scaffoldKey.currentState.openDrawer(),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                  new Container(
+                    decoration: new BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: new DecorationImage(
+                          image: AssetImage('assets/login/profile.png'),
+                          fit: BoxFit.scaleDown),
+                    ),
+                  ),
+                ]
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              new Container(
+                height: 30,
+                child: new Text("Michael Scott",
+                  style: TextStyle(
+                      fontSize: 25.0,fontWeight: FontWeight.bold,color: Colors.black,backgroundColor: Colors.white
+                  ),),
+              ),
+              new Icon(Icons.edit)
+            ],
+          ),
+          Expanded(
+            child: new Container(
+              color: Colors.white,
+              height: 200.0,
+              child: DefaultTabController(
+                length: 2,
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      constraints: BoxConstraints.expand(height: 50),
+                      child: TabBar(unselectedLabelColor: Colors.black,
+                          indicator: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.deepPurple,
+                          ),
+                          tabs: [
+                            Tab(child: Text('Personal',style: TextStyle(fontSize: 15.0),)),
+                            Tab(child: Text('Medical',style: TextStyle(fontSize: 15.0),)),
+                          ]),
+                    ),
+                    Expanded(
+                      child: TabBarView(children: [
+                        Container(
+                          color: Colors.black12,
+                        ),
+                        Container(
+                          color: Colors.black38,
+                        ),
+                      ]),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          )
+
+        ],
       ),
       drawer: new Drawer(
         child: new ListView(

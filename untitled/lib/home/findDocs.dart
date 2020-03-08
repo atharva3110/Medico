@@ -11,11 +11,64 @@ class findDocs extends StatefulWidget {
 }
 
 class _findDocsState extends State<findDocs> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
+    var divheight = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Find Doctors'),
+      key: _scaffoldKey,
+      body: Column(
+        children: <Widget>[
+          new Container(
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 28),
+            decoration: new BoxDecoration(
+                image: new DecorationImage(
+                    image: new AssetImage('assets/login/header.jpg'),
+                    fit: BoxFit.cover)
+            ),
+            height: divheight/2*0.4,
+            child: new Stack(
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          InkWell(
+                            child: Icon(Icons.menu, color: Colors.white,),
+                            onTap: () => _scaffoldKey.currentState.openDrawer(),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                  new Container(
+                    decoration: new BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: new DecorationImage(
+                          image: AssetImage('assets/login/profile.png'),
+                          fit: BoxFit.scaleDown),
+                    ),
+                  ),
+                ]
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              new Container(
+                height: 30,
+                child: new Text("Michael Scott",
+                  style: TextStyle(
+                      fontSize: 25.0,fontWeight: FontWeight.bold,color: Colors.black,backgroundColor: Colors.white
+                  ),),
+              ),
+            ],
+          ),
+        ],
       ),
       drawer: new Drawer(
         child: new ListView(
