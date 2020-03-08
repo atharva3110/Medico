@@ -16,7 +16,7 @@ class _emailSignUpState extends State<emailSignUp> {
   final databasereference=Firestore.instance;
 
   void signIn() async {
-  //signin function
+                                                                                        //signin function
 
   final FormState formState = _formKey.currentState;
   if (formState.validate()) {

@@ -2,8 +2,7 @@ import 'package:untitled/emailSignUp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:untitled/home/homePage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:untitled/login_page.dart';
 
 
 void main() => runApp(MyApp());
@@ -40,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Container(
       child: GestureDetector(onTap: (){
 
-            Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => login_page()));
         
       },
       ),
