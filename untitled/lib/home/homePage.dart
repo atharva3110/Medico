@@ -200,7 +200,7 @@ class _homePageState extends State<homePage> {
               onTap: (){
                 Navigator.of(context).pop;
                 Navigator.of(context).push(new MaterialPageRoute(
-                    builder: (BuildContext context) => new chatsForums()));
+                    builder: (BuildContext context) => new chatsForums(user: widget.user,)));
               },
             ),
             ListTile(

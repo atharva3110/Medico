@@ -1,76 +1,37 @@
+
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled/home/appointment.dart';
 import 'package:untitled/home/findDocs.dart';
 import 'package:untitled/home/profile.dart';
 import 'package:untitled/home/trackMedication.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class chatsForums extends StatefulWidget {
+ final FirebaseUser user;
+
+  const chatsForums({Key key, this.user}) : super(key: key);
+
   @override
   _chatsForumsState createState() => _chatsForumsState();
 }
 
 class _chatsForumsState extends State<chatsForums> {
+
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
 
 
   @override
   Widget build(BuildContext context) {
     var divheight = MediaQuery.of(context).size.height;
     return Scaffold(
-      key: _scaffoldKey,
-      body: Column(
-        children: <Widget>[
-          new Container(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 28),
-            decoration: new BoxDecoration(
-                image: new DecorationImage(
-                    image: new AssetImage('assets/login/header.jpg'),
-                    fit: BoxFit.cover)
-            ),
-            height: divheight/2*0.4,
-            child: new Stack(
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          InkWell(
-                            child: Icon(Icons.menu, color: Colors.white,),
-                            onTap: () => _scaffoldKey.currentState.openDrawer(),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                  new Container(
-                    decoration: new BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: new DecorationImage(
-                          image: AssetImage('assets/login/profile.png'),
-                          fit: BoxFit.scaleDown),
-                    ),
-                  ),
-                ]
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              new Container(
-                height: 30,
-                child: new Text("Michael Scott",
-                  style: TextStyle(
-                      fontSize: 25.0,fontWeight: FontWeight.bold,color: Colors.black,backgroundColor: Colors.white
-                  ),),
-              ),
-            ],
-          ),
-        ],
+      appBar: AppBar(
+        title: Text('Chats'),
       ),
+      body: ListPage(user: widget.user,),
 
       drawer: new Drawer(
         child: new ListView(
@@ -180,3 +141,202 @@ class _chatsForumsState extends State<chatsForums> {
     );
   }
 }
+
+class ListPage extends StatefulWidget {
+  final FirebaseUser user;
+
+  const ListPage({Key key, this.user}) : super(key: key);
+
+  @override
+  _ListPageState createState() => _ListPageState();
+}
+
+class _ListPageState extends State<ListPage> {
+  Future getChats() async
+  {
+    var firestore=Firestore.instance;
+
+     QuerySnapshot qn=await firestore.collection("Chats").where('userId', isEqualTo: widget.user.uid ).getDocuments();
+
+
+    return qn.documents;
+  }
+
+  openChat(String documentID,DocumentSnapshot data)
+  {
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>chatBox(dId: documentID,ss: data)));
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: FutureBuilder(
+        future: getChats(),
+          builder: (_,snapshot){
+        if(snapshot.connectionState==ConnectionState.waiting)
+          {
+            return Center(child: Text('Loading...'),
+            );
+          }
+        else{
+          return ListView.builder(
+            itemCount: snapshot.data?.length?? 0,
+              itemBuilder: (_, index){
+              return ListTile(
+                leading: new CircleAvatar(  backgroundImage: new AssetImage('assets/login/profile.jpg'),),
+                contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                title: Text(snapshot.data[index].data['docName']),
+                subtitle: Text(snapshot.data[index].data['lastMessage']),
+                onTap: ()=>openChat(snapshot.data[index].documentID.toString(),snapshot.data[index])
+
+              );
+
+          });
+        }
+
+      }),
+    );
+  }
+
+
+}
+
+class chatBox extends StatefulWidget {
+  final String dId;
+  final DocumentSnapshot ss;
+
+  const chatBox({Key key, this.dId, this.ss}) : super(key: key);
+
+  @override
+  _chatBoxState createState() => _chatBoxState();
+}
+
+class _chatBoxState extends State<chatBox> {
+  String _messsage;
+  TextEditingController messageController = TextEditingController();
+  ScrollController scrollController = ScrollController();
+  final Firestore firestore=Firestore.instance;
+  Future getChats() async
+  {
+    var firestore = Firestore.instance;
+
+    QuerySnapshot qn = await firestore.collection("Chats")
+        .document(widget.dId)
+        .collection('userChats')
+        .getDocuments();
+
+
+    return qn.documents;
+  }
+
+  Future<void> callback() async {
+    if (messageController.text.length > 0) {
+      await firestore.collection('Chats').document(widget.dId).collection('userChats').add({
+        'message': messageController.text,
+        'from': 'user',
+        'date': DateTime.now().toIso8601String().toString(),
+      });
+      messageController.clear();
+
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 300),
+      );
+    }
+  }
+
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          children: <Widget>[
+            CircleAvatar(
+                backgroundImage: new AssetImage('assets/login/profile.jpg')),
+            SizedBox(width: 10,),
+            Text(widget.ss.data['docName'])
+          ],
+        ),
+      ),
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            SizedBox(height: 450,
+              child: FutureBuilder(
+                  future: getChats(),
+                  builder: (_, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: Text('Loading...'),
+                      );
+                    }
+                    else {
+                      return ListView.builder(
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (_, index) {
+                            return ListTile(
+                              leading: new CircleAvatar(
+                                backgroundImage: new AssetImage(
+                                    'assets/login/profile.jpg'),),
+                              contentPadding: EdgeInsets.fromLTRB(
+                                  10, 10, 10, 0),
+                              title: Text(
+                                  getTitle(snapshot.data[index].data['from'])),
+                              subtitle: Text(
+                                  snapshot.data[index].data['message'],
+                                style: TextStyle(
+                                  fontSize: 40
+                                ),
+                              ),
+                            );
+                          });
+                    }
+                  }),
+            ),
+            Row(
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(left: 10, bottom: 5),
+                  width: 280,
+                  child: TextField(
+                    controller: messageController,
+                    onSubmitted: (input)=>callback(),
+                    decoration: InputDecoration(
+                      hintText: "Enter message",
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10,),
+                FloatingActionButton(
+                  child: Icon(Icons.send,
+                    color: Colors.white,
+                  ),
+                  onPressed: callback,
+
+                  splashColor: Colors.deepPurple[400],
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+
+  String getTitle(data) {
+    if(data=='user')
+      {
+        return "Me";
+      }
+    else
+      {
+        return widget.ss.data['docName'];
+      }
+  }
+
+}
+
