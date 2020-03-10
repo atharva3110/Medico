@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+  import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled/home/appointment.dart';
 import 'package:untitled/home/chatsForums.dart';
@@ -136,7 +136,7 @@ class _findDocsState extends State<findDocs> {
                   primary: false,
                   shrinkWrap: true,
                   children: tempSearchStore.map((element) {
-                    return buildResultCard(element);
+                    return buildResultCard(context,element);
                   }).toList())
             ]
             ),
@@ -242,7 +242,9 @@ class _findDocsState extends State<findDocs> {
               onTap: (){
                 Navigator.of(context).pop;
                 Navigator.of(context).push(new MaterialPageRoute(
-                    builder: (BuildContext context) => new trackMedication()));
+                    builder: (BuildContext context) => new trackMedication()
+                )
+                );
               },
             )
           ],
@@ -253,21 +255,25 @@ class _findDocsState extends State<findDocs> {
 
 }
 
-Widget  buildResultCard(data)
+Widget  buildResultCard(BuildContext contex1,data)
 {
   return Card(
+
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
     elevation: 2.0,
     child: Container(
       child: Center(
         child: Column(
           children: <Widget>[
+            SizedBox(height: 10,),
+
             CircleAvatar(
               backgroundImage: AssetImage('assets/login/profile.jpg'),
             ),
             Text(data['name'],
               textAlign: TextAlign.center,
               style: TextStyle(
+                  fontWeight: FontWeight.bold,
                   color: Colors.black,
                   fontSize: 20.0
               ),
@@ -276,17 +282,80 @@ Widget  buildResultCard(data)
 
             Text('Contact:'+data['phn']),
             RaisedButton(
+              onPressed: (){
+                showProfile(contex1, data);
 
+              },
+              splashColor: Colors.deepPurple[300],
+              color: Colors.deepPurple,
               child: Text("See details",
               style: TextStyle(
-                color: Colors.yellow
+                color: Colors.white
               ),
               ),
-              color: Colors.deepPurple,
+
             )
           ],
         ),
       ),
     ),
+  );
+}
+
+Future<bool> showProfile(BuildContext contex,data)
+{
+  return showDialog(context: contex,
+    barrierDismissible: true,
+    builder: (BuildContext contex)
+    {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0)
+        ),
+        child: Container(
+          height: 400.0,
+          width: 300.0,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
+          child: Column(
+            children: <Widget>[
+              SizedBox(height: 30,),
+              Row(
+                children: <Widget>[
+                  SizedBox(width: 40,),
+
+                  CircleAvatar(
+                    backgroundImage: AssetImage('assets/login/profile.jpg'),
+                    radius: 35,
+                  ),
+                  Text(data['name'],
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                  )
+                ],
+              ),
+             Row(
+               children: <Widget>[
+                 SizedBox(width:70 ,),
+                 Icon(Icons.call,
+                   color: Colors.deepPurple,
+                 ),
+
+                 Icon(Icons.mail,
+                   color: Colors.deepPurple,
+                 ),
+
+                 Icon(Icons.directions,
+                   color: Colors.deepPurple,
+                 )
+               ],
+             ),
+              Text('Details of doctor will be displayed below')
+            ],
+          ),
+        ),
+      );
+    }
   );
 }
