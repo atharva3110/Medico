@@ -1,5 +1,7 @@
 
 
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +10,10 @@ import 'package:untitled/home/findDocs.dart';
 import 'package:untitled/home/profile.dart';
 import 'package:untitled/home/trackMedication.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:untitled/local_data.json';
 class chatsForums extends StatefulWidget {
  final FirebaseUser user;
+
 
   const chatsForums({Key key, this.user}) : super(key: key);
 
@@ -203,6 +206,7 @@ class _ListPageState extends State<ListPage> {
 class chatBox extends StatefulWidget {
   final String dId;
   final DocumentSnapshot ss;
+
 
 
   const chatBox({Key key, this.dId, this.ss}) : super(key: key);

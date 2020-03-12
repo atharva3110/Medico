@@ -98,13 +98,112 @@ class _profileState extends State<profile> with SingleTickerProviderStateMixin {
                     ),
                     Expanded(
                         child: TabBarView(children: [
-                          Container(
-                            color: Colors.black12,
+
+                          SingleChildScrollView(
+                            child: Container(
+                              child: Column(
+                                children: <Widget>[
+                                  TextField(
+                                    decoration: InputDecoration(
+                                      labelText: 'Name'
+                                    ),
+                                  ),
+                                  TextField(
+                                    decoration: InputDecoration(
+                                      labelText: 'Age'
+                                    ),
+                                  ),
+                                  TextField(
+                                    decoration: InputDecoration(
+                                      labelText: 'Gender'
+                                    ),
+                                  ),
+                                  TextField(
+                                    decoration: InputDecoration(
+                                      labelText: 'Blood Group'
+                                    ),
+                                  ),
+                                  TextField(
+                                    decoration: InputDecoration(
+                                      labelText: 'Height'
+                                    ),
+                                  ),
+                                  TextField(
+                                    decoration: InputDecoration(
+                                      labelText: 'Weight'
+                                    ),
+                                  ),
+                                  TextField(
+                                    decoration: InputDecoration(
+                                      labelText: 'Residential Address',
+                                      contentPadding: const EdgeInsets.symmetric(vertical: 30.0),
+                                    ),
+                                  ),
+                                  TextField(
+                                    decoration: InputDecoration(
+                                        labelText: 'Emergency Contact Number'
+                                    ),
+                                  ),
+                                  RaisedButton(
+                                    color: Colors.deepPurple,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius
+                                            .circular(18)
+                                    ),
+                                    child: Text('Submit',
+                                    style: TextStyle(
+                                      color: Colors.white
+                                    ),
+                                    ),
+                                    onPressed: (){},
+                                  )
+                                ],
+                              ),
+                            ),
                           ),
                           Container(
-                            color: Colors.black38,
+                            color: Colors.white,
+                            child: Column(
+                              children: <Widget>[
+                                TextField(
+                                  decoration: InputDecoration(
+                                      labelText: 'Allergies'
+                                  ),
+                                ),
+                                TextField(
+                                  decoration: InputDecoration(
+                                      labelText: 'Chronic Diseases'
+                                  ),
+                                ),
+                                TextField(
+                                  decoration: InputDecoration(
+                                      labelText: 'Injuries'
+                                  ),
+                                ),
+                                TextField(
+                                  decoration: InputDecoration(
+                                      labelText: 'Surjeries'
+                                  ),
+                                ),
+                                RaisedButton(
+                                  color: Colors.deepPurple,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius
+                                          .circular(18)
+                                  ),
+                                  child: Text('Submit',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                      fontSize: 20
+                                    ),
+                                  ),
+                                  onPressed: (){},
+                                )
+                              ],
+                            ),
                           ),
-                        ]),
+                        ]
+                        ),
                     )
                   ],
                 ),

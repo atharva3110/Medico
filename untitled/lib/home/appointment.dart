@@ -4,6 +4,7 @@ import 'package:untitled/home/chatsForums.dart';
 import 'package:untitled/home/findDocs.dart';
 import 'package:untitled/home/profile.dart';
 import 'package:untitled/home/trackMedication.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class appointment extends StatefulWidget {
   @override
@@ -13,13 +14,16 @@ class appointment extends StatefulWidget {
 class _appointmentState extends State<appointment> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-
   @override
   Widget build(BuildContext context) {
     var divheight = MediaQuery.of(context).size.height;
-    final appointments=['March 2020','March 2020','March 2020','Feb 2020','May 2020'];
-    final appointment_dates=['16','17','22','31','22'];
-    final appointment_days=['Saturday','Monday','Friday','Wednesday','Thursday'];
+    Future getAppointments() async
+    {
+      var firestore = Firestore.instance;
+      QuerySnapshot qn = await firestore.collection("Appointments").where('userId',isEqualTo: '123eee')  //here 123eee will be uid
+          .getDocuments();
+      return qn.documents;
+    }
     return Scaffold(
       key: _scaffoldKey,
       body: Column(
@@ -80,6 +84,8 @@ class _appointmentState extends State<appointment> {
           ),
           Container(child: Divider(color: Color.fromRGBO(181, 166, 166, 1),),
             padding:EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0) ,),
+
+          SizedBox(height: 20.0,),
           new Container(
             alignment: Alignment.topLeft,
             padding: EdgeInsets.fromLTRB(20.0, 5.0, 5.0, 0.0),
@@ -90,86 +96,49 @@ class _appointmentState extends State<appointment> {
               ),),
           ),
           Container(
-            height: 180,
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: appointments.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    title: Text(appointments[index],style: TextStyle(
-                      color: Color(0xFFB5A6A6),
-                    ),),
-                    subtitle: Text(appointment_days[index],style:TextStyle(
-                      color: Color(0xFFB5A6A6),
-                    ),),
-                    leading: Text(appointment_dates[index],
-                      style: TextStyle(
-                        fontSize: 30.0,
-                        color: Colors.black,
-                      ),),
-                    trailing: RaisedButton(
-                      color: Color(0xFFC81010),
-                      shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(18.0),
-                      ),
-                      onPressed: (){},
-                      child: Text("More Details",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),),
-                    ),
+            height: 330,
+            child: FutureBuilder(
+              future: getAppointments(),
+              builder: (_, snapshot){
+                return ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index) {
 
-                  ),
+                    return Card(
+                      child: ListTile(
+                        title: Text(snapshot.data[index].data['appointment'],style: TextStyle(
+                          color: Color(0xFFB5A6A6),
+                        ),
+                        ),
+                        subtitle: Text(snapshot.data[index].data['appointment_day'],style:TextStyle(
+                          color: Color(0xFFB5A6A6),
+                        ),
+                        ),
+                        leading: Text(snapshot.data[index].data['appointment_date'],
+                          style: TextStyle(
+                            fontSize: 30.0,
+                            color: Colors.black,
+                          ),
+                        ),
+                        trailing: RaisedButton(
+                          color: Color(0xFFC81010),
+                          shape: new RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(18.0),
+                          ),
+                          onPressed: (){},
+                          child: Text("More Details",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
-                ),
-          ),
-          SizedBox(height: 20.0,),
-          new Container(
-            alignment: Alignment.topLeft,
-            padding: EdgeInsets.fromLTRB(20.0, 5.0, 5.0, 0.0),
-            height: 25,
-            child: new Text("Recent",textAlign: TextAlign.left,
-              style: TextStyle(
-                  fontSize: 15.0,fontWeight: FontWeight.normal,color: Colors.black,backgroundColor: Colors.white
-              ),),
-          ),
-          Container(
-            height: 90,
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: appointments.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    title: Text(appointments[index],style: TextStyle(
-                      color: Color(0xFFB5A6A6),
-                    ),),
-                    subtitle: Text(appointment_days[index],style:TextStyle(
-                      color: Color(0xFFB5A6A6),
-                    ),),
-                    leading: Text(appointment_dates[index],
-                      style: TextStyle(
-                        fontSize: 30.0,
-                        color: Colors.black,
-                      ),),
-                    trailing: RaisedButton(
-                      color: Color(0xFFC81010),
-                      shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(18.0),
-                      ),
-                      onPressed: (){},
-                      child: Text("More Details",
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),),
-                    ),
-
-                  ),
-                );
-              },
-            ),
+            )
           ),
         ],
       ),
