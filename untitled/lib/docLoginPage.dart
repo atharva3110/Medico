@@ -1,43 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/docLoginPage.dart';
-import 'package:untitled/main.dart';
-import 'package:untitled/docLoginPage.dart';
-import 'package:untitled/home/homePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-class login_page extends StatefulWidget {
+import 'package:untitled/doctorHomePage/homePage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class docLoginPage extends StatefulWidget {
   @override
-  _login_pageState createState() => _login_pageState();
+  _docLoginPageState createState() => _docLoginPageState();
 }
 
-class _login_pageState extends State<login_page> {
+class _docLoginPageState extends State<docLoginPage> {
   String _email,_password;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void loginUser() async {
-                                                                       //login function
+    //login function
 
     final FormState formState = _formKey.currentState;
     if (formState.validate()) {
       formState.save();
       try {
-
+        Firestore firestore;
         FirebaseUser user = (await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password)).user;
-        Navigator.push(context, MaterialPageRoute(
-            builder: (context)=>homePage(user: user,)
-        ));
+        if (firestore.collection("Doctors").document().documentID == user.uid)
+          {
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context)=>homePage(user: user,)
+            ));
+          }
+        else
+          {
+            FirebaseAuth.instance.signOut();
+          }
+
       }
       catch (e) {
         print(e.message);
       }
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login with email'),
-        backgroundColor: Colors.deepPurple[400],
+        title: Text('Doctor Login'),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(30, 110, 30, 0),
@@ -102,28 +107,18 @@ class _login_pageState extends State<login_page> {
                                     icon: Icon(
                                       Icons.lock_outline,
                                       color: Colors.deepPurple,)
-
                                 ),
                                 obscureText: true,
-
                               ),
-
-
-
-                              SizedBox(height: 20,),
-
-
-                              SizedBox(height: 10,)
-
+                              SizedBox(height: 30,)
                             ],
                           ),
                         )
                     ),
                   )
               ),
-
             ),
-            SizedBox(height: 10,),
+            SizedBox(height: 20,),
             RaisedButton (
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius
@@ -139,55 +134,8 @@ class _login_pageState extends State<login_page> {
                   letterSpacing: 2.0,
                 ),),
             ),
-            SizedBox(height: 15,),
-            Text('OR'),
-            SizedBox(height: 20,),
-            Row(
-              children: <Widget>[
-                SizedBox(width: 49,),
-                Text("Create a new account?",
-                style: TextStyle(
-                  color: Colors.blueGrey
-                ),
-                ),
-                SizedBox(width: 5,),
-
-                GestureDetector(
-                  onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUp()));},
-                  child: Text("Signup",
-                    style: TextStyle(
-                      color: Colors.deepPurple,
-                    ),
-
-                  ),
-                )
-              ],
-            ),
-            SizedBox(height: 20,),
-
-            RaisedButton (
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius
-                      .circular(18)
-              ),
-              onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>docLoginPage()));
-              },
-              padding: EdgeInsets.fromLTRB(
-                  50, 10, 50, 10),
-              textColor: Colors.white,
-              color: Colors.deepPurple,
-              child: Text('Login as doctor',
-                style: TextStyle(
-                  letterSpacing: 2.0,
-                ),),
-            ),
-
           ],
         ),
-
-
-
       ),
     );
   }

@@ -336,8 +336,10 @@ Future<bool> showProfile(BuildContext contex,data)
                 ],
               ),
              Row(
+
                children: <Widget>[
-                 SizedBox(width:70 ,),
+                 SizedBox(width:100,
+                 ),
                  Icon(Icons.call,
                    color: Colors.deepPurple,
                  ),
@@ -351,7 +353,34 @@ Future<bool> showProfile(BuildContext contex,data)
                  )
                ],
              ),
-              Text('Details of doctor will be displayed below')
+
+              Text('Details of doctor will be displayed below'),
+
+              SizedBox(height: 150,),
+
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  RaisedButton(
+                    onPressed: (){},
+                    color: Colors.deepPurple,
+                    child: Text("Chat",
+                    style: TextStyle(
+                      color: Colors.white
+                    ),
+                    ),
+                  ),
+                  RaisedButton(
+                    onPressed: (){},
+                    color: Colors.deepPurple,
+                    child: Text("Book Appointment",
+                    style: TextStyle(
+                      color: Colors.white
+                    ),
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         ),

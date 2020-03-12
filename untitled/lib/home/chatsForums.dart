@@ -156,7 +156,7 @@ class _ListPageState extends State<ListPage> {
   {
     var firestore=Firestore.instance;
 
-     QuerySnapshot qn=await firestore.collection("Chats").where('userId', isEqualTo: widget.user.uid ).getDocuments();
+     QuerySnapshot qn=await firestore.collection("Chats").where('userId', isEqualTo: widget.user.uid).getDocuments();
 
 
     return qn.documents;
@@ -204,6 +204,7 @@ class chatBox extends StatefulWidget {
   final String dId;
   final DocumentSnapshot ss;
 
+
   const chatBox({Key key, this.dId, this.ss}) : super(key: key);
 
   @override
@@ -221,7 +222,7 @@ class _chatBoxState extends State<chatBox> {
 
     QuerySnapshot qn = await firestore.collection("Chats")
         .document(widget.dId)
-        .collection('userChats')
+        .collection('userChats').orderBy('date')
         .getDocuments();
 
 
@@ -230,12 +231,19 @@ class _chatBoxState extends State<chatBox> {
 
   Future<void> callback() async {
     if (messageController.text.length > 0) {
+      _messsage= messageController.text;
+      messageController.clear();
       await firestore.collection('Chats').document(widget.dId).collection('userChats').add({
-        'message': messageController.text,
+        'message': _messsage,
         'from': 'user',
         'date': DateTime.now().toIso8601String().toString(),
       });
-      messageController.clear();
+      await firestore.collection('Chats').document(widget.dId).updateData({
+        'lastMessage': _messsage,
+      });
+
+
+
 
       scrollController.animateTo(
         scrollController.position.maxScrollExtent,
@@ -251,6 +259,8 @@ class _chatBoxState extends State<chatBox> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+
       appBar: AppBar(
         title: Row(
           children: <Widget>[
@@ -279,11 +289,11 @@ class _chatBoxState extends State<chatBox> {
                             return ListTile(
                               leading: new CircleAvatar(
                                 backgroundImage: new AssetImage(
-                                    'assets/login/profile.jpg'),),
+                                    'assets/login/profile.jpg'),
+                              ),
                               contentPadding: EdgeInsets.fromLTRB(
                                   10, 10, 10, 0),
-                              title: Text(
-                                  getTitle(snapshot.data[index].data['from'])),
+                              title: Text(getTitle(snapshot.data[index].data['from'])),
                               subtitle: Text(
                                   snapshot.data[index].data['message'],
                                 style: TextStyle(
