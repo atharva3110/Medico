@@ -17,6 +17,7 @@ class _appointmentState extends State<appointment> {
   @override
   Widget build(BuildContext context) {
     var divheight = MediaQuery.of(context).size.height;
+
     Future getAppointments() async
     {
       var firestore = Firestore.instance;
@@ -96,7 +97,7 @@ class _appointmentState extends State<appointment> {
               ),),
           ),
           Container(
-            height: 330,
+            height: 190,
             child: FutureBuilder(
               future: getAppointments(),
               builder: (_, snapshot){
@@ -139,6 +140,55 @@ class _appointmentState extends State<appointment> {
                 );
               },
             )
+          ),
+          new Container(
+            alignment: Alignment.topLeft,
+            padding: EdgeInsets.fromLTRB(20.0, 5.0, 5.0, 0.0),
+            height: 25,
+            child: new Text("Recent",textAlign: TextAlign.left,
+              style: TextStyle(
+                  fontSize: 15.0,fontWeight: FontWeight.normal,color: Colors.black,backgroundColor: Colors.white
+              ),),
+          ),
+          Container(
+              height: 95,
+            child: FutureBuilder(
+              future: getAppointments(),
+              builder: (_, snapshot) {
+                return Card(
+                  child: ListTile(
+                    title: Text(
+                      snapshot.data[0].data['appointment'], style: TextStyle(
+                      color: Color(0xFFB5A6A6),
+                    ),
+                    ),
+                    subtitle: Text(snapshot.data[0].data['appointment_day'],
+                      style: TextStyle(
+                        color: Color(0xFFB5A6A6),
+                      ),
+                    ),
+                    leading: Text(snapshot.data[0].data['appointment_date'],
+                      style: TextStyle(
+                        fontSize: 30.0,
+                        color: Colors.black,
+                      ),
+                    ),
+                    trailing: RaisedButton(
+                      color: Color(0xFFC81010),
+                      shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(18.0),
+                      ),
+                      onPressed: () {},
+                      child: Text("More Details",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }
+              ),
           ),
         ],
       ),
