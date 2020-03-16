@@ -208,10 +208,7 @@ class chatBox extends StatefulWidget {
   final String dId;
   final DocumentSnapshot ss;
 
-
-
   const chatBox({Key key, this.dId, this.ss}) : super(key: key);
-
   @override
   _chatBoxState createState() => _chatBoxState();
 }
@@ -246,10 +243,6 @@ class _chatBoxState extends State<chatBox> {
       await firestore.collection('Chats').document(widget.dId).updateData({
         'lastMessage': _messsage,
       });
-
-
-
-
       scrollController.animateTo(
         scrollController.position.maxScrollExtent,
         curve: Curves.easeOut,
