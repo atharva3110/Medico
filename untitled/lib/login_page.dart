@@ -158,7 +158,6 @@ class _login_pageState extends State<login_page> {
                     style: TextStyle(
                       color: Colors.deepPurple,
                     ),
-
                   ),
                 )
               ],
@@ -180,9 +179,9 @@ class _login_pageState extends State<login_page> {
               child: Text('Login as doctor',
                 style: TextStyle(
                   letterSpacing: 2.0,
-                ),),
+                ),
+              ),
             ),
-
           ],
         ),
 

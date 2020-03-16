@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:untitled/home/appointment.dart';
 import 'package:untitled/home/chatsForums.dart';
 import 'package:untitled/home/findDocs.dart';
+import 'package:untitled/home/forum_page.dart';
 import 'package:untitled/home/profile.dart';
 import 'package:untitled/home/trackMedication.dart';
 import 'package:untitled/main.dart';
@@ -90,7 +91,8 @@ class _homePageState extends State<homePage> {
                   },
             ),
           ),
-          Container(child: Divider(color: Color.fromRGBO(181, 166, 166, 1),),
+          Container(child: Divider(color: Color.fromRGBO(181, 166, 166, 1),
+          ),
             padding:EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0) ,),
           Column(
             children: <Widget>[
@@ -234,7 +236,7 @@ class _homePageState extends State<homePage> {
                 ListTile(
                   leading: Icon(
                     Icons.chat, color: Color.fromRGBO(61, 13, 68, 1),),
-                  title: Text("Forums and Chat",
+                  title: Text("Chats",
                     style: TextStyle(
                       fontSize: 16.0,
                       color: Color.fromRGBO(181, 166, 166, 1),
@@ -246,6 +248,23 @@ class _homePageState extends State<homePage> {
                     Navigator.of(context).push(new MaterialPageRoute(
                         builder: (BuildContext context) =>
                         new chatsForums(user: widget.user,)));
+                  },
+                ),
+                ListTile(
+                  leading: Icon(
+                    Icons.forum, color: Color.fromRGBO(61, 13, 68, 1),),
+                  title: Text("Forums",
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Color.fromRGBO(181, 166, 166, 1),
+                      //fontFamily: 'Segoe UI',
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop;
+                    Navigator.of(context).push(new MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                        new forum_page()));
                   },
                 ),
                 ListTile(

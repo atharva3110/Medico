@@ -189,6 +189,7 @@ class _ListPageState extends State<ListPage> {
                 contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                 title: Text(snapshot.data[index].data['docName']),
                 subtitle: Text(snapshot.data[index].data['lastMessage']),
+
                 onTap: ()=>openChat(snapshot.data[index].documentID.toString(),snapshot.data[index])
 
               );
