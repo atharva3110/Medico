@@ -93,10 +93,15 @@ class _replies_pageState extends State<replies_page> {
                       color: Colors.white,
                     ),
                     onPressed: (){
+
                       Firestore.instance.collection("Forum").document(widget.question_id).collection('replies').add({
                         'reply': _reply,
                         'userType': 'user',
-                        'userName': 'gaurang pawar'
+                        'userName': 'gaurang pawar'  /* add user name from local storage*/
+                      });
+
+                      Firestore.instance.collection('Forum').document(widget.question_id).updateData({
+                        'replies': FieldValue.increment(1),
                       });
 
                     },
