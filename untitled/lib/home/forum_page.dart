@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:untitled/home/chatsForums.dart';
+import 'package:untitled/home/post_question.dart';
 import 'package:untitled/home/replies_page.dart';
 
 
@@ -12,6 +13,8 @@ class forum_page extends StatefulWidget {
 class _forum_pageState extends State<forum_page> {
   Icon actionIcon =Icon(Icons.search);
   Widget appBarTitle= Text('Forum');
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,9 +46,12 @@ class _forum_pageState extends State<forum_page> {
       ),
 
       body: Scaffold(
-        floatingActionButton: new FloatingActionButton(onPressed: (){},
+        floatingActionButton: new FloatingActionButton(onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>post_question()));
+        },
           child: Icon(Icons.add_comment),
           splashColor: Colors.deepPurple[400],
+
         ),
         body: Container(
           child: StreamBuilder(
@@ -58,16 +64,14 @@ class _forum_pageState extends State<forum_page> {
               else
                 {
                   return ListView.builder(
-
-
                     itemCount: snapshot.data.documents.length,
                     itemBuilder:(context, index){
                       DocumentSnapshot docSnap=snapshot.data.documents[index];
                       var isPressed=false;
                       String question= docSnap['question'].toString();
                       String replies= docSnap['replies'].toString();
-                     return Card(
 
+                     return Card(
                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                        elevation: 2.0,
                        child: Column(
@@ -79,6 +83,7 @@ class _forum_pageState extends State<forum_page> {
                                fontSize: 19
                              ),
                            ),
+
                            Row(
                              children: <Widget>[
                                IconButton(
@@ -98,28 +103,31 @@ class _forum_pageState extends State<forum_page> {
                                    );
                                  },
                                ),
-                               SizedBox(width: 15,),
-                               Text(replies),               //number of replies(show toast in replies in 0)
+
+                               SizedBox(width: 15),
+
+                               Text(replies), //number of replies(show toast in replies in 0)
+
                                IconButton(
                                  icon: Icon(Icons.comment),
                                  onPressed: (){
-
                                      Navigator.push(context, MaterialPageRoute(
                                          builder: (context)=> replies_page(question_id: docSnap.documentID,)
                                      )
                                      );
-
                                  },
                                ),
 
                                RaisedButton(
-                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
                                  onPressed: (){},
                                  color: Colors.deepPurple,
-                                 splashColor: Colors.deepPurple[400],
+                                 shape: RoundedRectangleBorder(
+                                     borderRadius: new BorderRadius.circular(20),
+                                 ),
                                  child: Text('Follow',
                                  style: TextStyle(
-                                   color: Colors.white
+                                   color: Colors.white,
+                                   fontWeight: FontWeight.bold
                                  ),
                                  ),
                                )
@@ -137,4 +145,5 @@ class _forum_pageState extends State<forum_page> {
       ),
     );
   }
+
 }
