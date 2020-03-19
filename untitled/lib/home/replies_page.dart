@@ -102,8 +102,8 @@ class _replies_pageState extends State<replies_page> {
 
                       Firestore.instance.collection('Forum').document(widget.question_id).updateData({
                         'replies': FieldValue.increment(1),
-                      });
-
+                      }
+                      );
                     },
 
                     splashColor: Colors.deepPurple[400],

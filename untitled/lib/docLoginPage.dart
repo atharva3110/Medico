@@ -21,16 +21,9 @@ class _docLoginPageState extends State<docLoginPage> {
       try {
         Firestore firestore;
         FirebaseUser user = (await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password)).user;
-        if (firestore.collection("Doctors").document().documentID == user.uid)
-          {
             Navigator.push(context, MaterialPageRoute(
                 builder: (context)=>homePage(user: user,)
             ));
-          }
-        else
-          {
-            FirebaseAuth.instance.signOut();
-          }
 
       }
       catch (e) {

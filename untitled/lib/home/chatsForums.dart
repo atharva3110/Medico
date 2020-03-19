@@ -1,7 +1,4 @@
-
-
 import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,12 +7,10 @@ import 'package:untitled/home/findDocs.dart';
 import 'package:untitled/home/profile.dart';
 import 'package:untitled/home/trackMedication.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:untitled/local_data.json';
+
 class chatsForums extends StatefulWidget {
  final FirebaseUser user;
-
-
-  const chatsForums({Key key, this.user}) : super(key: key);
+ const chatsForums({Key key, this.user}) : super(key: key);
 
   @override
   _chatsForumsState createState() => _chatsForumsState();
@@ -24,8 +19,6 @@ class chatsForums extends StatefulWidget {
 class _chatsForumsState extends State<chatsForums> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -140,14 +133,12 @@ class _chatsForumsState extends State<chatsForums> {
           ],
         ),
       ),
-
     );
   }
 }
 
 class ListPage extends StatefulWidget {
   final FirebaseUser user;
-
   const ListPage({Key key, this.user}) : super(key: key);
 
   @override
@@ -158,10 +149,7 @@ class _ListPageState extends State<ListPage> {
   Future getChats() async
   {
     var firestore=Firestore.instance;
-
-     QuerySnapshot qn=await firestore.collection("Chats").where('userId', isEqualTo: widget.user.uid).getDocuments();
-
-
+    QuerySnapshot qn=await firestore.collection("Chats").where('userId', isEqualTo: widget.user.uid).getDocuments();
     return qn.documents;
   }
 
@@ -193,22 +181,20 @@ class _ListPageState extends State<ListPage> {
                 onTap: ()=>openChat(snapshot.data[index].documentID.toString(),snapshot.data[index])
 
               );
-
-          });
+            }
+          );
         }
-
-      }),
+        }
+      ),
     );
   }
-
-
 }
 
 class chatBox extends StatefulWidget {
   final String dId;
   final DocumentSnapshot ss;
-
   const chatBox({Key key, this.dId, this.ss}) : super(key: key);
+
   @override
   _chatBoxState createState() => _chatBoxState();
 }
@@ -218,6 +204,7 @@ class _chatBoxState extends State<chatBox> {
   TextEditingController messageController = TextEditingController();
   ScrollController scrollController = ScrollController();
   final Firestore firestore=Firestore.instance;
+
   Future getChats() async
   {
     var firestore = Firestore.instance;
@@ -226,8 +213,6 @@ class _chatBoxState extends State<chatBox> {
         .document(widget.dId)
         .collection('userChats').orderBy('date')
         .getDocuments();
-
-
     return qn.documents;
   }
 
@@ -239,10 +224,12 @@ class _chatBoxState extends State<chatBox> {
         'message': _messsage,
         'from': 'user',
         'date': DateTime.now().toIso8601String().toString(),
-      });
+      }
+      );
       await firestore.collection('Chats').document(widget.dId).updateData({
         'lastMessage': _messsage,
-      });
+      }
+      );
       scrollController.animateTo(
         scrollController.position.maxScrollExtent,
         curve: Curves.easeOut,
@@ -251,13 +238,9 @@ class _chatBoxState extends State<chatBox> {
     }
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
 
       appBar: AppBar(
         title: Row(
@@ -269,6 +252,7 @@ class _chatBoxState extends State<chatBox> {
           ],
         ),
       ),
+
       body: Container(
         child: Column(
           children: <Widget>[
@@ -301,7 +285,8 @@ class _chatBoxState extends State<chatBox> {
                             );
                           });
                     }
-                  }),
+                  }
+                  ),
             ),
             Row(
               children: <Widget>[
@@ -316,7 +301,9 @@ class _chatBoxState extends State<chatBox> {
                     ),
                   ),
                 ),
+
                 SizedBox(width: 10,),
+
                 FloatingActionButton(
                   child: Icon(Icons.send,
                     color: Colors.white,
@@ -332,8 +319,6 @@ class _chatBoxState extends State<chatBox> {
       ),
     );
   }
-
-
 
   String getTitle(data) {
     if(data=='user')
